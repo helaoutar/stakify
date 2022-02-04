@@ -1,6 +1,4 @@
-import { ethers } from "ethers";
 import { createContext, useState } from "react";
-import Web3 from "web3";
 import useWeb3 from "../hooks/useWeb3";
 import connectWallet, { getWeb3Modal } from "../utils/connectWallet";
 
