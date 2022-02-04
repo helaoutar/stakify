@@ -77,76 +77,76 @@ const Controls: React.FC<Props> = ({ currentUser }) => {
 
   return (
     <>
-      <LoadingOverlay
+      {/* <LoadingOverlay
         active={stakeFormik.isSubmitting || unstakeFormik.isSubmitting}
         spinner={<BounceLoader />}
         className="w-full h-screen pt-32 flex justify-center"
-      >
-        <div className="flex flex-col border-2 py-4 px-6 rounded-md border-gray-100 h-min">
-          <div className="text-xl font-semibold flex justify-between mb-8">
-            <h2>Rewards: {earnedTokens}</h2>|
-            <h2>Your Stake: {depositedTokens}</h2>
-          </div>
-          <div className="flex space-x-12">
-            <FormikProvider value={stakeFormik}>
-              <Form autoComplete="off" onSubmit={stakeFormik.handleSubmit}>
-                <div className="flex flex-col items-start">
-                  <button
-                    className={buttonClassName}
-                    type="submit"
-                    disabled={stakeFormik.isSubmitting}
-                  >
-                    Stake
-                  </button>
-                  <input
-                    type="number"
-                    className={inputClassName}
-                    {...stakeFormik.getFieldProps("stake")}
-                  />
-                  <ErrorMessage
-                    className="mt-2 text-sm text-red-600"
-                    name="stake"
-                    component="span"
-                  />
-                </div>
-              </Form>
-            </FormikProvider>
-            <FormikProvider value={unstakeFormik}>
-              <Form autoComplete="off" onSubmit={unstakeFormik.handleSubmit}>
-                <div className="flex flex-col items-start">
-                  <button className={buttonClassName} type="submit">
-                    Unstake
-                  </button>
-                  <input
-                    type="number"
-                    className={inputClassName}
-                    {...unstakeFormik.getFieldProps("unstake")}
-                  />
-                  <ErrorMessage
-                    className="mt-2 text-sm text-red-600"
-                    component="span"
-                    name="unstake"
-                  />
-                </div>
-              </Form>
-            </FormikProvider>
-            <div className="flex flex-col items-start">
-              <button
-                className={buttonClassName}
-                onClick={() => {
-                  if (earnedTokens === "0.0") {
-                    alert("Nothing to claim!");
-                  } else {
-                    claimRewards();
-                  }
-                }}
-              >
-                Claim rewards
-              </button>
-            </div>
+      > */}
+      <div className="flex flex-col border-2 py-4 px-6 rounded-md border-gray-100 h-min">
+        <div className="text-xl font-semibold flex justify-between mb-8">
+          <h2>Rewards: {earnedTokens}</h2>|
+          <h2>Your Stake: {depositedTokens}</h2>
+        </div>
+        <div className="flex space-x-12">
+          <FormikProvider value={stakeFormik}>
+            <Form autoComplete="off" onSubmit={stakeFormik.handleSubmit}>
+              <div className="flex flex-col items-start">
+                <button
+                  className={buttonClassName}
+                  type="submit"
+                  disabled={stakeFormik.isSubmitting}
+                >
+                  Stake
+                </button>
+                <input
+                  type="number"
+                  className={inputClassName}
+                  {...stakeFormik.getFieldProps("stake")}
+                />
+                <ErrorMessage
+                  className="mt-2 text-sm text-red-600"
+                  name="stake"
+                  component="span"
+                />
+              </div>
+            </Form>
+          </FormikProvider>
+          <FormikProvider value={unstakeFormik}>
+            <Form autoComplete="off" onSubmit={unstakeFormik.handleSubmit}>
+              <div className="flex flex-col items-start">
+                <button className={buttonClassName} type="submit">
+                  Unstake
+                </button>
+                <input
+                  type="number"
+                  className={inputClassName}
+                  {...unstakeFormik.getFieldProps("unstake")}
+                />
+                <ErrorMessage
+                  className="mt-2 text-sm text-red-600"
+                  component="span"
+                  name="unstake"
+                />
+              </div>
+            </Form>
+          </FormikProvider>
+          <div className="flex flex-col items-start">
+            <button
+              className={buttonClassName}
+              onClick={() => {
+                if (earnedTokens === "0.0") {
+                  alert("Nothing to claim!");
+                } else {
+                  claimRewards();
+                }
+              }}
+            >
+              Claim rewards
+            </button>
           </div>
         </div>
-      </LoadingOverlay>
+      </div>
+      {/* </LoadingOverlay> */}
     </>
   );
 };
