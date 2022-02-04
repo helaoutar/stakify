@@ -1,6 +1,6 @@
 https://stakify.vercel.app/
 
-# Stack
+# Staking POC
 
 The app is built using React / Tailwind / Formik / Ethers.js / Web3modal
 
