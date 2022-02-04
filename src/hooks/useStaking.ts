@@ -26,14 +26,10 @@ const useStaking = (currentUser: UserData) => {
   };
 
   const claimRewards = async () => {
-    try {
-      const contract = getContract();
+    const contract = getContract();
 
-      const data = await contract.claim();
-      return data;
-    } catch (e) {
-      console.log(e);
-    }
+    const data = await contract.claim();
+    return data;
   };
 
   const getTotalEarnedTokens = async () => {
