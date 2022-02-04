@@ -1,4 +1,3 @@
-import { useRef } from "react";
 import Web3 from "web3";
 import { poolAddress, approveAddress } from "./../constants";
 
@@ -36,9 +35,7 @@ const useStaking = (currentUser: UserData, web3: Web3) => {
   };
 
   const convertToWei = (amount: any) => {
-    const wei = web3.utils.toWei(amount, "ether");
-
-    return wei;
+    return web3.utils.toWei(amount, "ether");
   };
 
   const convertFromWei = (wei: any) => {

@@ -2,7 +2,7 @@ https://stakify.vercel.app/
 
 # Stack
 
-The app is built using React / Tailwind / Formik / Ethers.js / Web3modal
+The app is built using React / Tailwind / Formik / Web3.js / Web3modal
 
 # Features
 
