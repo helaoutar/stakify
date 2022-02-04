@@ -1,6 +1,6 @@
 https://stakify.vercel.app/
 
-# Stack
+# Staking POC
 
 The app is built using React / Tailwind / Formik / Web3.js / Web3modal
 
@@ -19,3 +19,6 @@ The app first checks if the user has Metamask in their browser, if they do then 
 - Cleaming rewards uses: `contract.claim` write method
 - How much tokens the user staked comes from `contract.depositedTokens` read method
 - How much the user earned comes from `contract.totalEarnedTokens` read method
+
+
+Most of the logic is inside `src/hooks/useStaking.ts`
