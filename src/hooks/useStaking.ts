@@ -1,109 +1,97 @@
-import { poolAddress, approveAddress } from "./../constants/index";
-import { ethers } from "ethers";
-import abi from "../abi/pool";
-import testabi from "../abi/test";
-import { UserData } from "../context/UserProvider";
+import { useRef } from "react";
 import Web3 from "web3";
+import { poolAddress, approveAddress } from "./../constants";
+
+import abi from "../abi/pool";
+import approveAbi from "../abi/test";
+
+import { UserData } from "../context/UserProvider";
+
+const getPoolContract = (web3: Web3) => {
+  const poolContract = new web3.eth.Contract(
+    // @ts-ignore
+    abi,
+    poolAddress
+  );
+  return poolContract;
+};
+
+const getApproveContract = (web3: Web3) => {
+  const approveContract = new web3.eth.Contract(
+    // @ts-ignore
+    approveAbi,
+    approveAddress
+  );
+  return approveContract;
+};
 
 const useStaking = (currentUser: UserData) => {
-  const getContract = () => {
-    const signer = currentUser.signature;
-    const contract = new ethers.Contract(poolAddress, abi, signer!);
+  const web3 = useRef<Web3>(new Web3(window.ethereum));
 
-    return contract;
+  const wrapMethodeWithPromise = (method: any) => {
+    return new Promise<any>((res, rej) => {
+      method
+        .send({ from: currentUser.address })
+        .on("confirmation", res)
+        .on("error", rej);
+    });
   };
 
-  const getTestContract = () => {
-    const signer = currentUser.signature;
-    const contract = new ethers.Contract(poolAddress, testabi, signer!);
+  const convertToWei = (amount: any) => {
+    const wei = web3.current.utils.toWei(amount, "ether");
 
-    return contract;
+    return wei;
+  };
+
+  const approveTransaction = (amount: any) => {
+    const approveContract = getApproveContract(web3.current);
+    return new Promise<any>((res, rej) => {
+      approveContract.methods
+        .approve(poolAddress, amount)
+        .send({ from: currentUser.address })
+        .on("confirmation", res)
+        .on("error", rej);
+    });
   };
 
   const stake = async (amount: number) => {
-    const poolContract = getContract();
-    const testContract = getTestContract();
+    const poolContract = getPoolContract(web3.current);
 
-    const numberOfDecimals = 0;
-    const payload = "0x1"; //ethers.utils.parseUnits("1.0", numberOfDecimals);
-
-    const web3 = new Web3(window.ethereum);
-
-    // const approve = await testContract.approve(currentUser.address, payload, {
-    //   gasLimit: 500000,
-    // });
-    // console.log(approve);
-    // await approve.wait();
-    console.log("test");
-    const testToken = new web3.eth.Contract(
-      // @ts-ignore
-      testabi,
-      approveAddress
-    );
-
-    const tokenStaking = new web3.eth.Contract(
-      // @ts-ignore
-      abi,
-      poolAddress
-    );
-
-    // @ts-ignore
-    let convertToWei = web3.utils.toWei("1", "Ether");
-
-    testToken.methods
-      .approve(poolAddress, convertToWei)
-      .send({ from: currentUser.address })
-      .on("transactionHash", (hash: any) => {
-        tokenStaking.methods
-          .stakeTokens(convertToWei)
-          .send({ from: currentUser.address })
-          .on("transactionHash", (hash: any) => {
-            console.log("transactionHash");
-          })
-          .on("receipt", (receipt: any) => {
-            console.log("transactionHash");
-          })
-          .on("confirmation", (confirmationNumber: any, receipt: any) => {
-            console.log("transactionHash");
-          });
-      })
-      .on("error", (error: any) => {
-        console.log("Error Code:", error.code);
-        console.log(error.message);
-      });
-
-    // const data = await poolContract.stakeTokens(payload, {
-    //   gasLimit: 500000,
-    // });
-    // return data;
+    const wei = convertToWei(amount);
+    await approveTransaction(wei);
+    await wrapMethodeWithPromise(poolContract.methods.stakeTokens(wei));
   };
 
   const unstake = async (amount: number) => {
-    const contract = getContract();
+    const poolContract = getPoolContract(web3.current);
 
-    const data = await contract.withdraw(amount);
-    return data;
+    const wei = convertToWei(amount);
+    await approveTransaction(wei);
+    await wrapMethodeWithPromise(poolContract.methods.unstakeTokens(wei));
   };
 
   const claimRewards = async () => {
-    const contract = getContract();
+    const poolContract = getPoolContract(web3.current);
 
-    const data = await contract.claim();
-    return data;
+    await wrapMethodeWithPromise(poolContract.methods.claimRewards());
   };
 
   const getTotalEarnedTokens = async () => {
-    const contract = getContract();
+    const poolContract = getPoolContract(web3.current);
 
-    const data = await contract.totalEarnedTokens(currentUser.address);
-    return ethers.utils.formatEther(data);
+    const data = await wrapMethodeWithPromise(
+      poolContract.methods.totalEarned()
+    );
+    return data;
   };
 
   const getDepositedToken = async () => {
-    const contract = getContract();
+    const poolContract = getPoolContract(web3.current);
 
-    const data = await contract.depositedTokens(currentUser.address);
-    return ethers.utils.formatEther(data);
+    const data = await wrapMethodeWithPromise(
+      poolContract.methods.stakingBalance()
+    );
+    return data;
   };
 
   return {
