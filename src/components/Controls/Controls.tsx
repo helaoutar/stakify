@@ -73,7 +73,6 @@ const Controls: React.FC<Props> = ({ currentUser, web3 }) => {
     getTotalEarnedTokens().then((data) => {
       setEarnedTokens(data);
     });
-
     getDepositedToken().then((data) => {
       setDepositedTokens(data);
     });
