@@ -7,22 +7,24 @@ import * as Yup from "yup";
 import { useFormik, Form, FormikProvider, ErrorMessage } from "formik";
 import { UserData } from "../../context/UserProvider";
 import useStaking from "../../hooks/useStaking";
+import Web3 from "web3";
 
 type Props = {
   currentUser: UserData;
+  web3: Web3;
 };
 
 const buttonClassName = `w-full mb-2 bg-transparent hover:bg-blue-500 text-blue-600 font-semibold hover:text-white py-2 px-4 border border-blue-400 hover:border-transparent rounded`;
 const inputClassName = `border py-2 px-3 text-grey-darkest`;
 
-const Controls: React.FC<Props> = ({ currentUser }) => {
+const Controls: React.FC<Props> = ({ currentUser, web3 }) => {
   const {
     stake,
     unstake,
     claimRewards,
     getTotalEarnedTokens,
     getDepositedToken,
-  } = useStaking(currentUser);
+  } = useStaking(currentUser, web3);
 
   const [earnedTokens, setEarnedTokens] = useState("0.0");
   const [depositedTokens, setDepositedTokens] = useState("0.0");
@@ -39,6 +41,7 @@ const Controls: React.FC<Props> = ({ currentUser }) => {
     onSubmit: async ({ stake: amount }) => {
       try {
         await stake(amount);
+        getStats();
       } catch (e) {
         toast.error("Error while staking");
         console.log(e);
@@ -58,6 +61,7 @@ const Controls: React.FC<Props> = ({ currentUser }) => {
     onSubmit: async ({ unstake: amount }) => {
       try {
         await unstake(amount);
+        getStats();
       } catch (e) {
         toast.error("Invalid amount to withdraw.");
         console.log(e);
@@ -65,7 +69,7 @@ const Controls: React.FC<Props> = ({ currentUser }) => {
     },
   });
 
-  useEffect(() => {
+  const getStats = () => {
     getTotalEarnedTokens().then((data) => {
       setEarnedTokens(data);
     });
@@ -73,6 +77,19 @@ const Controls: React.FC<Props> = ({ currentUser }) => {
     getDepositedToken().then((data) => {
       setDepositedTokens(data);
     });
+  };
+
+  const handleClaim = async () => {
+    if (earnedTokens === "0.0") {
+      alert("Nothing to claim!");
+    } else {
+      await claimRewards();
+      getStats();
+    }
+  };
+
+  useEffect(() => {
+    getStats();
   }, []);
 
   return (
@@ -131,16 +148,7 @@ const Controls: React.FC<Props> = ({ currentUser }) => {
               </Form>
             </FormikProvider>
             <div className="flex flex-col items-start">
-              <button
-                className={buttonClassName}
-                onClick={() => {
-                  if (earnedTokens === "0.0") {
-                    alert("Nothing to claim!");
-                  } else {
-                    claimRewards();
-                  }
-                }}
-              >
+              <button className={buttonClassName} onClick={handleClaim}>
                 Claim rewards
               </button>
             </div>

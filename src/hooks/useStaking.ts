@@ -25,9 +25,7 @@ const getApproveContract = (web3: Web3) => {
   return approveContract;
 };
 
-const useStaking = (currentUser: UserData) => {
-  const web3 = useRef<Web3>(new Web3(window.ethereum));
-
+const useStaking = (currentUser: UserData, web3: Web3) => {
   const wrapSendMethodeWithPromise = (method: any) => {
     return new Promise<any>((res, rej) => {
       method
@@ -38,13 +36,17 @@ const useStaking = (currentUser: UserData) => {
   };
 
   const convertToWei = (amount: any) => {
-    const wei = web3.current.utils.toWei(amount, "ether");
+    const wei = web3.utils.toWei(amount, "ether");
 
     return wei;
   };
 
+  const convertFromWei = (wei: any) => {
+    return web3.utils.fromWei(wei.toString(), "ether");
+  };
+
   const approveTransaction = (amount: any) => {
-    const approveContract = getApproveContract(web3.current);
+    const approveContract = getApproveContract(web3);
     return new Promise<any>((res, rej) => {
       approveContract.methods
         .approve(poolAddress, amount)
@@ -55,43 +57,43 @@ const useStaking = (currentUser: UserData) => {
   };
 
   const stake = async (amount: number) => {
-    const poolContract = getPoolContract(web3.current);
+    const poolContract = getPoolContract(web3);
 
     const wei = convertToWei(amount.toString());
     await approveTransaction(wei);
-    await wrapSendMethodeWithPromise(poolContract.methods.stakeTokens(wei));
+    await wrapSendMethodeWithPromise(poolContract.methods.deposit(wei));
   };
 
   const unstake = async (amount: number) => {
-    const poolContract = getPoolContract(web3.current);
+    const poolContract = getPoolContract(web3);
 
     const wei = convertToWei(amount.toString());
     await approveTransaction(wei);
-    await wrapSendMethodeWithPromise(poolContract.methods.unstakeTokens());
+    await wrapSendMethodeWithPromise(poolContract.methods.withdraw(wei));
   };
 
   const claimRewards = async () => {
-    const poolContract = getPoolContract(web3.current);
+    const poolContract = getPoolContract(web3);
 
-    await wrapSendMethodeWithPromise(poolContract.methods.claimRewards());
+    await wrapSendMethodeWithPromise(poolContract.methods.claim());
   };
 
   const getTotalEarnedTokens = async () => {
-    const poolContract = getPoolContract(web3.current);
+    const poolContract = getPoolContract(web3);
 
     const data = await poolContract.methods
-      .stakingBalance(currentUser.address)
+      .totalEarnedTokens(currentUser.address)
       .call();
-    return web3.current.utils.fromWei(data.toString(), "ether");
+    return convertFromWei(data);
   };
 
   const getDepositedToken = async () => {
-    const poolContract = getPoolContract(web3.current);
+    const poolContract = getPoolContract(web3);
 
     const data = await poolContract.methods
-      .stakingBalance(currentUser.address)
+      .depositedTokens(currentUser.address)
       .call();
-    return web3.current.utils.fromWei(data.toString(), "ether");
+    return convertFromWei(data);
   };
 
   return {

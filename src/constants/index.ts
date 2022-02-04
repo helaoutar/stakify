@@ -1,2 +1,2 @@
-export const poolAddress = "0xAf9352B33E9B08A86dD04fcD8533DbC75BD2c8d1";
-export const approveAddress = "0xb54039DAC3C4ADdAC082e86a6e9C290E80af9488";
+export const poolAddress = "0xfda1cf6261dcabaa29b3e464f78717ffb54b8a63";
+export const approveAddress = "0x3fd5d987eee6b6d5e590835da55a12cf5658307d";
