@@ -108,11 +108,7 @@ const abi = [
   },
   {
     inputs: [
-      {
-        internalType: "uint256",
-        name: "amountToDeposit",
-        type: "uint256",
-      },
+      { internalType: "uint256", name: "amountToDeposit", type: "uint256" },
     ],
     name: "deposit",
     outputs: [],
@@ -156,11 +152,7 @@ const abi = [
   },
   {
     inputs: [
-      {
-        internalType: "uint256",
-        name: "amountToWithdraw",
-        type: "uint256",
-      },
+      { internalType: "uint256", name: "amountToWithdraw", type: "uint256" },
     ],
     name: "emergencyWithdraw",
     outputs: [],
@@ -192,11 +184,7 @@ const abi = [
         name: "lastClaimedTimeStamps",
         type: "uint256[]",
       },
-      {
-        internalType: "uint256[]",
-        name: "stakedTokens",
-        type: "uint256[]",
-      },
+      { internalType: "uint256[]", name: "stakedTokens", type: "uint256[]" },
     ],
     stateMutability: "view",
     type: "function",
@@ -368,11 +356,7 @@ const abi = [
   },
   {
     inputs: [
-      {
-        internalType: "uint256",
-        name: "amountToWithdraw",
-        type: "uint256",
-      },
+      { internalType: "uint256", name: "amountToWithdraw", type: "uint256" },
     ],
     name: "withdraw",
     outputs: [],

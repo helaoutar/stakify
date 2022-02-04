@@ -1,9 +1,10 @@
 import { ethers } from "ethers";
 import { createContext, useState } from "react";
+import Web3 from "web3";
+import useWeb3 from "../hooks/useWeb3";
 import connectWallet, { getWeb3Modal } from "../utils/connectWallet";
 
 export type UserData = {
-  signature: ethers.providers.JsonRpcSigner | null;
   address: string | undefined;
 };
 
@@ -15,7 +16,6 @@ const UserContext = createContext<{
   disconnectWallet: () => void;
 }>({
   userData: {
-    signature: null,
     address: "",
   },
   requestAccount: noop,
@@ -24,17 +24,17 @@ const UserContext = createContext<{
 
 const UserProvider: React.FC = ({ children }) => {
   const [userData, setUserData] = useState<UserData | null>(null);
+  const { setWeb3 } = useWeb3();
 
   const requestAccount = async () => {
-    const { provider } = await connectWallet();
+    const web3 = await connectWallet();
 
-    const signer = provider.getSigner();
-    const address = await signer.getAddress();
+    const accounts = await web3.eth.getAccounts();
 
     setUserData({
-      signature: signer,
-      address: address,
+      address: accounts[0],
     });
+    setWeb3(web3);
   };
 
   const disconnectWallet = () => {
