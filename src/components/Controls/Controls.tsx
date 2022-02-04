@@ -96,7 +96,7 @@ const Controls: React.FC<Props> = ({ currentUser }) => {
                     type="submit"
                     disabled={stakeFormik.isSubmitting}
                   >
-                    Stack
+                    Stake
                   </button>
                   <input
                     type="number"
@@ -115,7 +115,7 @@ const Controls: React.FC<Props> = ({ currentUser }) => {
               <Form autoComplete="off" onSubmit={unstakeFormik.handleSubmit}>
                 <div className="flex flex-col items-start">
                   <button className={buttonClassName} type="submit">
-                    Unstack
+                    Unstake
                   </button>
                   <input
                     type="number"
