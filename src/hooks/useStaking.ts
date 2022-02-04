@@ -28,7 +28,7 @@ const getApproveContract = (web3: Web3) => {
 const useStaking = (currentUser: UserData) => {
   const web3 = useRef<Web3>(new Web3(window.ethereum));
 
-  const wrapMethodeWithPromise = (method: any) => {
+  const wrapSendMethodeWithPromise = (method: any) => {
     return new Promise<any>((res, rej) => {
       method
         .send({ from: currentUser.address })
@@ -57,41 +57,41 @@ const useStaking = (currentUser: UserData) => {
   const stake = async (amount: number) => {
     const poolContract = getPoolContract(web3.current);
 
-    const wei = convertToWei(amount);
+    const wei = convertToWei(amount.toString());
     await approveTransaction(wei);
-    await wrapMethodeWithPromise(poolContract.methods.stakeTokens(wei));
+    await wrapSendMethodeWithPromise(poolContract.methods.stakeTokens(wei));
   };
 
   const unstake = async (amount: number) => {
     const poolContract = getPoolContract(web3.current);
 
-    const wei = convertToWei(amount);
+    const wei = convertToWei(amount.toString());
     await approveTransaction(wei);
-    await wrapMethodeWithPromise(poolContract.methods.unstakeTokens(wei));
+    await wrapSendMethodeWithPromise(poolContract.methods.unstakeTokens());
   };
 
   const claimRewards = async () => {
     const poolContract = getPoolContract(web3.current);
 
-    await wrapMethodeWithPromise(poolContract.methods.claimRewards());
+    await wrapSendMethodeWithPromise(poolContract.methods.claimRewards());
   };
 
   const getTotalEarnedTokens = async () => {
     const poolContract = getPoolContract(web3.current);
 
-    const data = await wrapMethodeWithPromise(
-      poolContract.methods.totalEarned()
-    );
-    return data;
+    const data = await poolContract.methods
+      .stakingBalance(currentUser.address)
+      .call();
+    return web3.current.utils.fromWei(data.toString(), "ether");
   };
 
   const getDepositedToken = async () => {
     const poolContract = getPoolContract(web3.current);
 
-    const data = await wrapMethodeWithPromise(
-      poolContract.methods.stakingBalance()
-    );
-    return data;
+    const data = await poolContract.methods
+      .stakingBalance(currentUser.address)
+      .call();
+    return web3.current.utils.fromWei(data.toString(), "ether");
   };
 
   return {
